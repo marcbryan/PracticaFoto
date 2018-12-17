@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.IOException;
 
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
@@ -29,6 +30,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        File imgFile = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES)+"/fotoCamara.jpg");
+        if (imgFile.exists() && imgFile.length() > 0){
+            photoFile = imgFile;
+            Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+            ImageView myImage = (ImageView) findViewById(R.id.foto);
+            myImage.setImageBitmap(myBitmap);
+        }
+
         Button button = findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,7 +70,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
             setPic();
-
             Toast toast = Toast.makeText(getApplicationContext(), "Imagen guardada correctamente!", Toast.LENGTH_SHORT);
             toast.show();
         }
@@ -68,14 +77,9 @@ public class MainActivity extends AppCompatActivity {
 
     private File createImageFile() throws IOException {
         // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
+        String imageFileName = "fotoCamara.jpg";
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);//ruta donde se guardara la foto
-        File image = File.createTempFile(
-                imageFileName,
-                ".jpg",
-                storageDir
-        );
+        File image = new File(storageDir+"/"+imageFileName);
         return image;
     }
 
